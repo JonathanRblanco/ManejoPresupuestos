@@ -1,0 +1,66 @@
+﻿@model IEnumerable<TipoCuenta>
+
+@{
+
+    ViewData["Title"] = "Tipos Cuentas";
+}
+
+<h1>Tipos Cuentas</h1>
+<h5>El tipo de cuenta se refiere a cómo podemos agrupar cuentas. Ejemplos: Préstamos, tarjetas de crédito, etc.</h5>
+<a asp-action="Crear" asp-controller="TiposCuentas" class="btn btn-primary mb-3">Crear nuevo</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Acciones</th>
+            <th>Nombre</th>
+        </tr>
+    </thead>
+    <tbody id="reordenable">
+        @foreach (var tipoCuenta in Model)
+        {
+        <tr>
+            <td>
+                <input type="hidden" value="@tipoCuenta.Id" class="ids"/>
+                <a asp-action="Editar" asp-controller="TiposCuentas" asp-route-id="@(tipoCuenta.Id)" class="btn btn-primary">Editar</a>
+                <a asp-action="Borrar" asp-controller="TiposCuentas" asp-route-id="@(tipoCuenta.Id)" class="btn btn-danger">Borrar</a>
+            </td>
+            <td>
+                @tipoCuenta.Nombre
+            </td>
+        </tr>
+        }      
+    </tbody>
+    
+</table>
+@section Scripts{
+    <script>
+        const urlOrdenar='@Url.Action("Ordenar","TiposCuentas")';
+        $(function(){
+                $('#reordenable').sortable({ stop: async function(e,ui){
+                    await actualizarOrdenes();
+                }
+            });
+            async function actualizarOrdenes(){
+                const ids = obtenerIdsDeElementos();
+                await enviarIdsAlBackEnd(ids);
+            }
+            function obtenerIdsDeElementos(){
+                const ids = $(".ids").map(function(){
+                    return $(this).val();
+                }).get();
+                return ids;
+            }
+            async function enviarIdsAlBackEnd(ids){
+                    var data= JSON.stringify(ids);
+                    await fetch(urlOrdenar,{
+                    method:'POST',
+                    body:data,
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                });
+            }
+        })
+    </script>
+}
