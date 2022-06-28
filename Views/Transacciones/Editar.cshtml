@@ -1,11 +1,16 @@
-﻿@model TransaccionCreacionViewModel
+﻿@model TransaccionActualizarViewModel
 @{
-    ViewData["Title"] = "Crear Transacción";
+    ViewData["Title"] = "Editar Transaccion";
+    var linkCancelar = Model.UrlRetorno ?? Url.Action("Index");
 }
-<h1>Crear Transacción</h1>
+<h1>Editar Transacción</h1>
 <h5>Una transacción te permite indicar tus ingresos y gastos</h5>
-<form asp-action="Crear">
+<form asp-action="Editar">
     <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="UrlRetorno" />
+    <input type="hidden" asp-for="MontoAnterior"/>
+    <input type="hidden" asp-for="CuentaAnteriorId"/>
     <div class="mb-3">
         <label asp-for="FechaTransaccion" class="form-label"></label>
         <input asp-for="FechaTransaccion" class="form-control">
@@ -36,8 +41,9 @@
         <textarea asp-for="Nota" class="form-control"></textarea>
         <span asp-validation-for="Nota" class="text-danger"></span>
     </div> 
-    <button class="btn btn-primary">Enviar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    <button class="btn btn-primary">Actualizar</button>
+    <button class="btn-danger btn" asp-action="Borrar">Borrar</button>
+    <a href="@linkCancelar" class="btn btn-secondary">Cancelar</a>
 </form>
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />

@@ -31,11 +31,20 @@ namespace ManejoPresupuestos.Controllers
             await repositorioCategorias.Crear(categoria);
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(PaginacionViewModel paginacion)
         {
             var usuarioId = ServicioUsuarios.ObtenerUsuarioId();
-            var categorias = await repositorioCategorias.Obtener(usuarioId);
-            return View(categorias);
+            var categorias = await repositorioCategorias.Obtener(usuarioId,paginacion);
+            var totalCategorias=await repositorioCategorias.Contar(usuarioId);
+            var respuestaVM = new PaginacionRespuesta<Categoria>
+            {
+                Elementos = categorias,
+                Pagina = paginacion.Pagina,
+                RecordsPorPagina = paginacion.RecordsPorPagina,
+                CantidadTotalRecords = totalCategorias,
+                BaseUrl = Url.Action()
+            };
+            return View(respuestaVM);
         }
         public async Task<IActionResult> Editar(int id)
         {
